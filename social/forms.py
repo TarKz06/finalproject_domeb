@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment
+from .models import Post, Comment, MessageModel
 
 class PostForm(forms.ModelForm):
     body = forms.CharField(
@@ -8,6 +8,13 @@ class PostForm(forms.ModelForm):
             'rows': '3',
             'placeholder': 'Say Something...'
             }))
+
+    image = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={
+            'multiple': True
+            })
+    )
 
     class Meta:
         model = Post
@@ -24,3 +31,15 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+
+class ThreadForm(forms.Form):
+    username = forms.CharField(label='', max_length=100)
+
+class MessageForm(forms.ModelForm):
+    body = forms.CharField(label='', max_length=1000)
+
+    image = forms.ImageField(required=False)
+
+    class Meta:
+        model = MessageModel
+        fields = ['body', 'image']
