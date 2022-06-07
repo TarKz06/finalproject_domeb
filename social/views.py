@@ -148,6 +148,7 @@ class ProfileView(View):
         posts = Post.objects.filter(author=user).order_by('-created_on')
 
         followers = profile.followers.all()
+        noisers = profile.noises.all()
 
         if len(followers) == 0:
             is_following = False
@@ -159,7 +160,18 @@ class ProfileView(View):
             else:
                 is_following = False
 
+        if len(noisers) == 0:
+            is_noising = False
+
+        for noiser in noisers:
+            if noiser == request.user:
+                is_noising = True
+                break
+            else:
+                is_noising = False
+
         number_of_followers = len(followers)
+        number_of_noisers = len(noisers)
 
         context = {
             'user': user,
@@ -167,6 +179,9 @@ class ProfileView(View):
             'posts': posts,
             'number_of_followers': number_of_followers,
             'is_following': is_following,
+            'number_of_noisers': number_of_noisers,
+            'is_noising': is_noising,
+
         }
 
         return render(request, 'social/profile.html', context)
@@ -197,6 +212,23 @@ class RemoveFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.followers.remove(request.user)
+
+        return redirect('profile', pk=profile.pk)
+
+
+class AddNoiser(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.noises.add(request.user)
+
+        notification = Notification.objects.create(notification_type=5, from_user=request.user, to_user=profile.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class RemoveNoiser(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.noises.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
 
