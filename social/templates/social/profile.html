@@ -51,7 +51,7 @@
             {% if profile.birth_date %}
             <p>Birthday: {{ profile.birth_date }}</p>
             {% endif %}
-
+            {% comment %} Follow {% endcomment %}
             {% if user == request.user %}
                 {% else %}
                 {% if is_following %}
@@ -66,7 +66,7 @@
                     </form>
                 {% endif %}
             {% endif %}
-
+            {% comment %} Noiser {% endcomment %}
             {% if user == request.user %}
             {% else %}
             {% if is_noising %}
@@ -81,6 +81,26 @@
                 </form>
             {% endif %}
         {% endif %}
+            {% comment %} Service {% endcomment %}
+        {% if user == request.user %}
+        {% else %}
+        {% if is_servicing %}
+            <form method="POST" action="{% url 'remove-servicer' profile.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-danger" type="submit">Un service</button>
+            </form>
+            {% else %}
+            <form method="POST" action="{% url 'add-servicer' profile.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-success" type="submit">service</button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+
+
+
+
         </div>
     </div>
 

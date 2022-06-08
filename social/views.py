@@ -149,6 +149,7 @@ class ProfileView(View):
 
         followers = profile.followers.all()
         noisers = profile.noises.all()
+        servicers = profile.services.all()
 
         if len(followers) == 0:
             is_following = False
@@ -170,8 +171,20 @@ class ProfileView(View):
             else:
                 is_noising = False
 
+        # ======================================================
+        if len(servicers) == 0:
+            is_servicing = False
+
+        for servicer in servicers:
+            if servicer == request.user:
+                is_servicing = True
+                break
+            else:
+                is_servicing = False
+
         number_of_followers = len(followers)
         number_of_noisers = len(noisers)
+        number_of_servicers = len(servicers)
 
         context = {
             'user': user,
@@ -181,6 +194,8 @@ class ProfileView(View):
             'is_following': is_following,
             'number_of_noisers': number_of_noisers,
             'is_noising': is_noising,
+            'number_of_servicers': number_of_servicers,
+            'is_servicing': is_servicing,
 
         }
 
@@ -229,6 +244,22 @@ class RemoveNoiser(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.noises.remove(request.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class AddServicer(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.services.add(request.user)
+
+        notification = Notification.objects.create(notification_type=6, from_user=request.user, to_user=profile.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class RemoveServicer(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.services.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
 

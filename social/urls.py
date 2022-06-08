@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser
+from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser, AddServicer, RemoveServicer
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
@@ -17,9 +17,11 @@ urlpatterns = [
     path('profile/<int:pk>/followers/', ListFollowers.as_view(), name='list-followers'),
 
     path('profile/<int:pk>/followers/add', AddFollower.as_view(), name='add-follower'),
-    path('profile/<int:pk>/followers/remove', RemoveFollower.as_view(), name='remove-noiser'),
+    path('profile/<int:pk>/followers/remove', RemoveFollower.as_view(), name='remove-follower'),
     path('profile/<int:pk>/noisers/add', AddNoiser.as_view(), name='add-noiser'),
     path('profile/<int:pk>/noisers/remove', RemoveNoiser.as_view(), name='remove-noiser'),
+    path('profile/<int:pk>/services/add', AddServicer.as_view(), name='add-servicer'),
+    path('profile/<int:pk>/services/remove', RemoveServicer.as_view(), name='remove-servicer'),
 
     path('search/', UserSearch.as_view(), name='profile-search'),
     path('notification/<int:notification_pk>/post/<int:post_pk>', PostNotification.as_view(), name='post-notification'),
