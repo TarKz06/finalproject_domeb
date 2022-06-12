@@ -152,6 +152,7 @@ class ProfileView(View):
         followers = profile.followers.all()
         noisers = profile.noises.all()
         servicers = profile.services.all()
+        repairers = profile.repairs.all()
 
         if len(followers) == 0:
             is_following = False
@@ -174,6 +175,7 @@ class ProfileView(View):
                 is_noising = False
 
         # ======================================================
+
         if len(servicers) == 0:
             is_servicing = False
 
@@ -184,9 +186,23 @@ class ProfileView(View):
             else:
                 is_servicing = False
 
+        # ======================================================
+
+        if len(repairers) == 0:
+            is_repairing = False
+
+        for repairer in repairers:
+            if repairer == request.user:
+                is_repairing = True
+                break
+            else:
+                is_repairing = False
+
+
         number_of_followers = len(followers)
         number_of_noisers = len(noisers)
         number_of_servicers = len(servicers)
+        number_of_repairers = len(repairers)
 
         context = {
             'user': user,
@@ -198,7 +214,8 @@ class ProfileView(View):
             'is_noising': is_noising,
             'number_of_servicers': number_of_servicers,
             'is_servicing': is_servicing,
-
+            'number_of_repairers': number_of_repairers,
+            'is_repairing': is_repairing,
         }
 
         return render(request, 'social/profile.html', context)
@@ -262,6 +279,22 @@ class RemoveServicer(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.services.remove(request.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class AddRepairer(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.repairs.add(request.user)
+
+        notification = Notification.objects.create(notification_type=7, from_user=request.user, to_user=profile.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class RemoveRepairer(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.repairs.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
 
@@ -447,6 +480,16 @@ class NoiseNotification(View):
         return redirect('profile', pk=profile_pk)
 
 class ServiceNotification(View):
+    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        profile = UserProfile.objects.get(pk=profile_pk)
+
+        notification.user_has_seen = True
+        notification.save()
+
+        return redirect('profile', pk=profile_pk)
+
+class RepairNotification(View):
     def get(self, request, notification_pk, profile_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
         profile = UserProfile.objects.get(pk=profile_pk)

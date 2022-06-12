@@ -96,11 +96,36 @@
             </form>
         {% endif %}
     {% endif %}
+             {% comment %} Repair {% endcomment %}
+    {% if user == request.user %}
+    {% else %} 
+    {% if is_noising %}
+        <form method="POST" action="{% url 'remove-noiser' profile.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-outline-danger" type="submit">Un noiser</button>
+        </form>
+        {% else %}
+        <form method="POST" action="{% url 'add-noiser' profile.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-outline-success" type="submit">noiser</button>
+        </form>
+    {% endif %}
+{% endif %}
 
-
-
-
-
+{% if user == request.user %}
+{% else %}
+{% if is_repairing %}
+    <form method="POST" action="{% url 'remove-repairer' profile.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-danger" type="submit">Un repair</button>
+    </form>
+    {% else %}
+    <form method="POST" action="{% url 'add-repairer' profile.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-success" type="submit">repair</button>
+    </form>
+{% endif %}
+{% endif %}
         </div>
     </div>
 
