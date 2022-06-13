@@ -65,18 +65,18 @@
             <p>Birthday: {{ profile.birth_date }}</p>
             {% endif %}
             {% comment %} Follow {% endcomment %}
-            
+            <ul class="list-group list-group-horizontal">          
             {% if user == request.user %}
                 {% else %}
                 {% if is_following %}
                     <form method="POST" action="{% url 'remove-follower' profile.pk %}">
                         {% csrf_token %}
-                        <button class="btn btn-outline-danger" type="submit">Unfollow</button>
+                        <button style="margin-left: 5px" class="btn btn-outline-danger" type="submit">Unfollow</button>
                     </form>
                     {% else %}
                     <form method="POST" action="{% url 'add-follower' profile.pk %}">
                         {% csrf_token %}
-                        <button class="btn btn-outline-success" type="submit">Follow</button>
+                        <button style="margin-left: 5px" class="btn btn-outline-success" type="submit">Follow</button>
                     </form>
                 {% endif %}
             {% endif %}
@@ -86,12 +86,12 @@
             {% if is_noising %}
                 <form method="POST" action="{% url 'remove-noiser' profile.pk %}">
                     {% csrf_token %}
-                    <button class="btn btn-outline-danger" type="submit">Un noiser</button>
+                    <button style="margin-left: 5px" class="btn btn-outline-danger" type="submit">Un noiser</button>
                 </form>
                 {% else %}
                 <form method="POST" action="{% url 'add-noiser' profile.pk %}">
                     {% csrf_token %}
-                    <button class="btn btn-outline-success" type="submit">noiser</button>
+                    <button style="margin-left: 5px" class="btn btn-outline-success" type="submit">noiser</button>
                 </form>
             {% endif %}
         {% endif %}
@@ -101,12 +101,12 @@
         {% if is_servicing %}
             <form method="POST" action="{% url 'remove-servicer' profile.pk %}">
                 {% csrf_token %}
-                <button class="btn btn-outline-danger" type="submit">Un service</button>
+                <button style="margin-left: 5px" class="btn btn-outline-danger" type="submit">Un service</button>
             </form>
             {% else %}
             <form method="POST" action="{% url 'add-servicer' profile.pk %}">
                 {% csrf_token %}
-                <button class="btn btn-outline-success" type="submit">service</button>
+                <button style="margin-left: 5px" class="btn btn-outline-success" type="submit">service</button>
             </form>
         {% endif %}
     {% endif %}
@@ -116,12 +116,12 @@
 {% if is_repairing %}
     <form method="POST" action="{% url 'remove-repairer' profile.pk %}">
         {% csrf_token %}
-        <button class="btn btn-outline-danger" type="submit">Un repair</button>
+        <button style="margin-left: 5px" class="btn btn-outline-danger" type="submit">Un repair</button>
     </form>
     {% else %}
     <form method="POST" action="{% url 'add-repairer' profile.pk %}">
         {% csrf_token %}
-        <button class="btn btn-outline-success" type="submit">repair</button>
+        <button style="margin-left: 5px" class="btn btn-outline-success" type="submit">repair</button>
     </form>
 {% endif %}
 {% endif %}
@@ -132,14 +132,14 @@
     <form method="POST" action="{% url 'remove-parceler' profile.pk %}">
         {% csrf_token %}
         {% if request.user.is_superuser %}
-        <button class="btn btn-outline-danger" type="submit">Un parcel</button>
+        <button style="margin-left: 5px" class="btn btn-outline-danger" type="submit">Un parcel</button>
         {% endif %}
     </form>
     {% else %}
     <form method="POST" action="{% url 'add-parceler' profile.pk %}">
         {% csrf_token %}
         {% if request.user.is_superuser %}
-        <button class="btn btn-outline-success" type="submit">parcel</button>
+        <button style="margin-left: 5px" class="btn btn-outline-success" type="submit">parcel</button>
         {% endif %}
     </form>
 
@@ -147,7 +147,7 @@
 {% endif %}
         </div>
     </div>
-
+    {% if request.user.is_superuser %}
     {% for post in posts %}
     <div class="row justify-content-center mt-5">
         <div class="col-md-8 col-sm-12 border-bottom">
@@ -192,6 +192,7 @@
         </div>
         </div>
     </div>
-    {% endfor %}
+    {% endfor %}   
+    {% endif %}
 </div>
 {% endblock content %}

@@ -83,8 +83,8 @@
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button class="remove-default-btn" type="submit">
-                        {% comment %} <i class="far fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>
-                    </button> {% endcomment %}
+                       {% comment %} <i class="far fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i> {% endcomment %}
+                    </button>
                 </form>
         </div>
     </div>
