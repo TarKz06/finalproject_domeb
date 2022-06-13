@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+{% if request.user.is_superuser %}
 <div class="container">
     <div class="row justify-content-center mt-3">
         <div class="col-md-5 col-sm-12 border-bottom">
@@ -20,7 +21,31 @@
             </form>
         </div>
     </div>
+    {% endif %}
 
+    <div class="container">
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12 border-bottom">
+                <h5> Contact Staff!</h5>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-3 mb-5">
+            <div class="col-md-5 col-sm-12 border-bottom">
+                <a href="/social/profile/1/">
+                    <div class="card">
+                     <img class="card-img-top" src="https://www.cmrd.co.th/wp-content/uploads/2019/01/project01.jpg" alt="Card image cap">
+                     <div class="card-body">
+                       <p class="card-text">click here</p>
+                     </div>
+                   </div>
+                 </a>
+            </div>
+        </div>
+    {% comment %} <div class="row justify-content-center mt-3">
+        <div class="col-md-8">
+  
+</div>
+</div> {% endcomment %}
     {% for post in post_list %}
     <div class="row justify-content-center mt-3">
         <div class="col-md-5 col-sm-12 border-bottom position-relative">

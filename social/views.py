@@ -165,6 +165,8 @@ class ProfileView(View):
             else:
                 is_following = False
 
+        # ======================================================
+        
         if len(noisers) == 0:
             is_noising = False
 
@@ -215,7 +217,7 @@ class ProfileView(View):
         number_of_noisers = len(noisers)
         number_of_servicers = len(servicers)
         number_of_repairers = len(repairers)
-        number_of_parcelers = len(repairers)
+        number_of_parcelers = len(parcelers)
 
         context = {
             'user': user,
@@ -468,6 +470,7 @@ class UserSearch(View):
 
         return render(request, 'social/search.html', context)
 
+# List issue
 class ListFollowers(View):
     def get(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
@@ -479,6 +482,54 @@ class ListFollowers(View):
         }
 
         return render(request, 'social/followers_list.html', context)
+
+class ListNoisers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        noisers = profile.noises.all()
+
+        context = {
+            'profile': profile,
+            'noisers': noisers,
+        }
+
+        return render(request, 'social/noisers_list.html', context)
+
+# class ListFollowers(View):
+#     def get(self, request, pk, *args, **kwargs):
+#         profile = UserProfile.objects.get(pk=pk)
+#         followers = profile.followers.all()
+
+#         context = {
+#             'profile': profile,
+#             'followers': followers,
+#         }
+
+#         return render(request, 'social/followers_list.html', context)
+
+# class ListFollowers(View):
+#     def get(self, request, pk, *args, **kwargs):
+#         profile = UserProfile.objects.get(pk=pk)
+#         followers = profile.followers.all()
+
+#         context = {
+#             'profile': profile,
+#             'followers': followers,
+#         }
+
+#         return render(request, 'social/followers_list.html', context)
+        
+# class ListFollowers(View):
+#     def get(self, request, pk, *args, **kwargs):
+#         profile = UserProfile.objects.get(pk=pk)
+#         followers = profile.followers.all()
+
+#         context = {
+#             'profile': profile,
+#             'followers': followers,
+#         }
+
+#         return render(request, 'social/followers_list.html', context)
 
 class PostNotification(View):
     def get(self, request, notification_pk, post_pk, *args, **kwargs):
