@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser, AddServicer, RemoveServicer, NoiseNotification, ServiceNotification, AddRepairer, RemoveRepairer, RepairNotification, AddParceler, RemoveParceler, ParcelNotification, ListNoisers
+from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser, AddServicer, RemoveServicer, NoiseNotification, ServiceNotification, AddRepairer, RemoveRepairer, RepairNotification, AddParceler, RemoveParceler, ParcelNotification, ListNoisers, ListServicers, ListRepairers, Listparcelers
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
@@ -17,6 +17,9 @@ urlpatterns = [
 
     path('profile/<int:pk>/followers/', ListFollowers.as_view(), name='list-followers'),
     path('profile/<int:pk>/noisers/', ListNoisers.as_view(), name='list-noisers'),
+    path('profile/<int:pk>/servicers/', ListServicers.as_view(), name='list-servicers'),
+    path('profile/<int:pk>/repairers/', ListRepairers.as_view(), name='list-repairers'),
+    path('profile/<int:pk>/parcelers/', Listparcelers.as_view(), name='list-parcelers'),
 
     path('profile/<int:pk>/followers/add', AddFollower.as_view(), name='add-follower'),
     path('profile/<int:pk>/followers/remove', RemoveFollower.as_view(), name='remove-follower'),

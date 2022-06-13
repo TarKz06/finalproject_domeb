@@ -34,13 +34,24 @@
             {% if profile.bio %}
             <p>{{ profile.bio }}</p>
             {% endif %}
-
+            
+            {% if request.user.is_superuser %}
             <div class="mb-3">
                 <a href="{% url 'list-followers' profile.pk %}" class="post-link">Followers: {{ number_of_followers }}</a>
             </div>
             <div class="mb-3">
-                <a href="{% url 'list-noisers' profile.pk %}" class="post-link">Noiser: {{ number_of_noisers }}</a>
+                <a href="{% url 'list-noisers' profile.pk %}" class="post-link">Noisers: {{ number_of_noisers }}</a>
             </div>
+            <div class="mb-3">
+                <a href="{% url 'list-servicers' profile.pk %}" class="post-link">Servicers: {{ number_of_servicers }}</a>
+            </div>
+            <div class="mb-3">
+                <a href="{% url 'list-repairers' profile.pk %}" class="post-link">Repairers: {{ number_of_repairers}}</a>
+            </div>
+            <div class="mb-3">
+                <a href="{% url 'list-parcelers' profile.pk %}" class="post-link">Parcelers: {{ number_of_parcelers }}</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 

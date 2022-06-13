@@ -22,7 +22,7 @@
         </div>
     </div>
     {% endif %}
-
+    {% if not request.user.is_superuser %}
     <div class="container">
         <div class="row justify-content-center mt-3">
             <div class="col-md-5 col-sm-12 border-bottom">
@@ -41,11 +41,10 @@
                  </a>
             </div>
         </div>
-    {% comment %} <div class="row justify-content-center mt-3">
-        <div class="col-md-8">
-  
-</div>
-</div> {% endcomment %}
+        {% endif %}
+    
+ {% comment %} Post list part  {% endcomment %}
+ 
     {% for post in post_list %}
     <div class="row justify-content-center mt-3">
         <div class="col-md-5 col-sm-12 border-bottom position-relative">

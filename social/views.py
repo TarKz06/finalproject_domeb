@@ -495,41 +495,41 @@ class ListNoisers(View):
 
         return render(request, 'social/noisers_list.html', context)
 
-# class ListFollowers(View):
-#     def get(self, request, pk, *args, **kwargs):
-#         profile = UserProfile.objects.get(pk=pk)
-#         followers = profile.followers.all()
+class ListServicers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        servicers = profile.services.all()
 
-#         context = {
-#             'profile': profile,
-#             'followers': followers,
-#         }
+        context = {
+            'profile': profile,
+            'servicers': servicers,
+        }
 
-#         return render(request, 'social/followers_list.html', context)
+        return render(request, 'social/servicers_list.html', context)
 
-# class ListFollowers(View):
-#     def get(self, request, pk, *args, **kwargs):
-#         profile = UserProfile.objects.get(pk=pk)
-#         followers = profile.followers.all()
+class ListRepairers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        repairers = profile.repairs.all()
 
-#         context = {
-#             'profile': profile,
-#             'followers': followers,
-#         }
+        context = {
+            'profile': profile,
+            'repairers': repairers,
+        }
 
-#         return render(request, 'social/followers_list.html', context)
+        return render(request, 'social/repairers_list.html', context)
         
-# class ListFollowers(View):
-#     def get(self, request, pk, *args, **kwargs):
-#         profile = UserProfile.objects.get(pk=pk)
-#         followers = profile.followers.all()
+class Listparcelers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        parcelers = profile.parcels.all()
 
-#         context = {
-#             'profile': profile,
-#             'followers': followers,
-#         }
+        context = {
+            'profile': profile,
+            'parcelers': parcelers,
+        }
 
-#         return render(request, 'social/followers_list.html', context)
+        return render(request, 'social/parcelers_list.html', context)
 
 class PostNotification(View):
     def get(self, request, notification_pk, post_pk, *args, **kwargs):
