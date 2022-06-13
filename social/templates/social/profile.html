@@ -34,11 +34,24 @@
             {% if profile.bio %}
             <p>{{ profile.bio }}</p>
             {% endif %}
-
+            
+            {% if request.user.is_superuser %}
             <div class="mb-3">
                 <a href="{% url 'list-followers' profile.pk %}" class="post-link">Followers: {{ number_of_followers }}</a>
-                
             </div>
+            <div class="mb-3">
+                <a href="{% url 'list-noisers' profile.pk %}" class="post-link">Noisers: {{ number_of_noisers }}</a>
+            </div>
+            <div class="mb-3">
+                <a href="{% url 'list-servicers' profile.pk %}" class="post-link">Servicers: {{ number_of_servicers }}</a>
+            </div>
+            <div class="mb-3">
+                <a href="{% url 'list-repairers' profile.pk %}" class="post-link">Repairers: {{ number_of_repairers}}</a>
+            </div>
+            <div class="mb-3">
+                <a href="{% url 'list-parcelers' profile.pk %}" class="post-link">Parcelers: {{ number_of_parcelers }}</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 
@@ -52,6 +65,7 @@
             <p>Birthday: {{ profile.birth_date }}</p>
             {% endif %}
             {% comment %} Follow {% endcomment %}
+            
             {% if user == request.user %}
                 {% else %}
                 {% if is_following %}
@@ -96,11 +110,41 @@
             </form>
         {% endif %}
     {% endif %}
+             {% comment %} Repair {% endcomment %}
+{% if user == request.user %}
+{% else %}
+{% if is_repairing %}
+    <form method="POST" action="{% url 'remove-repairer' profile.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-danger" type="submit">Un repair</button>
+    </form>
+    {% else %}
+    <form method="POST" action="{% url 'add-repairer' profile.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-success" type="submit">repair</button>
+    </form>
+{% endif %}
+{% endif %}
+             {% comment %} parcel {% endcomment %}
+{% if user == request.user %}
+{% else %} 
+{% if is_parceling %}
+    <form method="POST" action="{% url 'remove-parceler' profile.pk %}">
+        {% csrf_token %}
+        {% if request.user.is_superuser %}
+        <button class="btn btn-outline-danger" type="submit">Un parcel</button>
+        {% endif %}
+    </form>
+    {% else %}
+    <form method="POST" action="{% url 'add-parceler' profile.pk %}">
+        {% csrf_token %}
+        {% if request.user.is_superuser %}
+        <button class="btn btn-outline-success" type="submit">parcel</button>
+        {% endif %}
+    </form>
 
-
-
-
-
+{% endif %}
+{% endif %}
         </div>
     </div>
 

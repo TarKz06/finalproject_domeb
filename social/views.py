@@ -90,6 +90,7 @@ class PostDetailView(LoginRequiredMixin, View):
 
         return render(request, 'social/post_detail.html', context)
 
+# The future feature doesn't have to be presented in progress 1
 class CommentReplyView(LoginRequiredMixin, View):
     def post(self, request, post_pk, pk, *args, **kwargs):
         post = Post.objects.get(pk=post_pk)
@@ -129,6 +130,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user == post.author
 
+# The future feature doesn't have to be presented in progress 1
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
     template_name = 'social/comment_delete.html'
@@ -150,6 +152,8 @@ class ProfileView(View):
         followers = profile.followers.all()
         noisers = profile.noises.all()
         servicers = profile.services.all()
+        repairers = profile.repairs.all()
+        parcelers = profile.parcels.all()
 
         if len(followers) == 0:
             is_following = False
@@ -161,6 +165,8 @@ class ProfileView(View):
             else:
                 is_following = False
 
+        # ======================================================
+        
         if len(noisers) == 0:
             is_noising = False
 
@@ -172,6 +178,7 @@ class ProfileView(View):
                 is_noising = False
 
         # ======================================================
+
         if len(servicers) == 0:
             is_servicing = False
 
@@ -182,9 +189,35 @@ class ProfileView(View):
             else:
                 is_servicing = False
 
+        # ======================================================
+
+        if len(repairers) == 0:
+            is_repairing = False
+
+        for repairer in repairers:
+            if repairer == request.user:
+                is_repairing = True
+                break
+            else:
+                is_repairing = False
+
+        # ======================================================
+
+        if len(parcelers) == 0:
+            is_parceling = False
+
+        for parceler in parcelers:
+            if parceler == request.user:
+                is_parceling = True
+                break
+            else:
+                is_parceling = False
+
         number_of_followers = len(followers)
         number_of_noisers = len(noisers)
         number_of_servicers = len(servicers)
+        number_of_repairers = len(repairers)
+        number_of_parcelers = len(parcelers)
 
         context = {
             'user': user,
@@ -196,7 +229,10 @@ class ProfileView(View):
             'is_noising': is_noising,
             'number_of_servicers': number_of_servicers,
             'is_servicing': is_servicing,
-
+            'number_of_repairers': number_of_repairers,
+            'is_repairing': is_repairing,
+            'number_of_parcelers': number_of_parcelers,
+            'is_parceling': is_parceling,
         }
 
         return render(request, 'social/profile.html', context)
@@ -263,6 +299,39 @@ class RemoveServicer(LoginRequiredMixin, View):
 
         return redirect('profile', pk=profile.pk)
 
+class AddRepairer(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.repairs.add(request.user)
+
+        notification = Notification.objects.create(notification_type=7, from_user=request.user, to_user=profile.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class RemoveRepairer(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.repairs.remove(request.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class AddParceler(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.parcels.add(request.user)
+
+        notification = Notification.objects.create(notification_type=8, from_user=request.user, to_user=profile.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class RemoveParceler(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.parcels.remove(request.user)
+
+        return redirect('profile', pk=profile.pk)
+
+# The future feature doesn't have to be presented in progress 1
 class AddLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
@@ -293,7 +362,8 @@ class AddLike(LoginRequiredMixin, View):
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
-
+        
+# The future feature doesn't have to be presented in progress 1
 class AddDislike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
@@ -324,6 +394,7 @@ class AddDislike(LoginRequiredMixin, View):
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
 
+# The future feature doesn't have to be presented in progress 1
 class AddCommentLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         comment = Comment.objects.get(pk=pk)
@@ -354,7 +425,8 @@ class AddCommentLike(LoginRequiredMixin, View):
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
-
+        
+# The future feature doesn't have to be presented in progress 1
 class AddCommentDislike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         comment = Comment.objects.get(pk=pk)
@@ -398,6 +470,7 @@ class UserSearch(View):
 
         return render(request, 'social/search.html', context)
 
+# List issue
 class ListFollowers(View):
     def get(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
@@ -409,6 +482,54 @@ class ListFollowers(View):
         }
 
         return render(request, 'social/followers_list.html', context)
+
+class ListNoisers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        noisers = profile.noises.all()
+
+        context = {
+            'profile': profile,
+            'noisers': noisers,
+        }
+
+        return render(request, 'social/noisers_list.html', context)
+
+class ListServicers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        servicers = profile.services.all()
+
+        context = {
+            'profile': profile,
+            'servicers': servicers,
+        }
+
+        return render(request, 'social/servicers_list.html', context)
+
+class ListRepairers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        repairers = profile.repairs.all()
+
+        context = {
+            'profile': profile,
+            'repairers': repairers,
+        }
+
+        return render(request, 'social/repairers_list.html', context)
+        
+class Listparcelers(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        parcelers = profile.parcels.all()
+
+        context = {
+            'profile': profile,
+            'parcelers': parcelers,
+        }
+
+        return render(request, 'social/parcelers_list.html', context)
 
 class PostNotification(View):
     def get(self, request, notification_pk, post_pk, *args, **kwargs):
@@ -450,6 +571,26 @@ class ServiceNotification(View):
 
         return redirect('profile', pk=profile_pk)
 
+class RepairNotification(View):
+    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        profile = UserProfile.objects.get(pk=profile_pk)
+
+        notification.user_has_seen = True
+        notification.save()
+
+        return redirect('profile', pk=profile_pk)
+
+class ParcelNotification(View):
+    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        profile = UserProfile.objects.get(pk=profile_pk)
+
+        notification.user_has_seen = True
+        notification.save()
+
+        return redirect('profile', pk=profile_pk)
+    
 class ThreadNotification(View):
     def get(self, request, notification_pk, object_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
