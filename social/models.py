@@ -43,7 +43,8 @@ class UserProfile(models.Model):
 	noises = models.ManyToManyField(User, blank=True, related_name='noises')
 	services = models.ManyToManyField(User, blank=True, related_name='services')
 	repairs = models.ManyToManyField(User, blank=True, related_name='repairs')
-    
+	parcels = models.ManyToManyField(User, blank=True, related_name='parcels')
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
 	if created:

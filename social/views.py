@@ -153,6 +153,7 @@ class ProfileView(View):
         noisers = profile.noises.all()
         servicers = profile.services.all()
         repairers = profile.repairs.all()
+        parcelers = profile.parcels.all()
 
         if len(followers) == 0:
             is_following = False
@@ -198,11 +199,23 @@ class ProfileView(View):
             else:
                 is_repairing = False
 
+        # ======================================================
+
+        if len(parcelers) == 0:
+            is_parceling = False
+
+        for parceler in parcelers:
+            if parceler == request.user:
+                is_parceling = True
+                break
+            else:
+                is_parceling = False
 
         number_of_followers = len(followers)
         number_of_noisers = len(noisers)
         number_of_servicers = len(servicers)
         number_of_repairers = len(repairers)
+        number_of_parcelers = len(repairers)
 
         context = {
             'user': user,
@@ -216,6 +229,8 @@ class ProfileView(View):
             'is_servicing': is_servicing,
             'number_of_repairers': number_of_repairers,
             'is_repairing': is_repairing,
+            'number_of_parcelers': number_of_parcelers,
+            'is_parceling': is_parceling,
         }
 
         return render(request, 'social/profile.html', context)
@@ -295,6 +310,22 @@ class RemoveRepairer(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.repairs.remove(request.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class AddParceler(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.parcels.add(request.user)
+
+        notification = Notification.objects.create(notification_type=8, from_user=request.user, to_user=profile.user)
+
+        return redirect('profile', pk=profile.pk)
+
+class RemoveParceler(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.parcels.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
 
@@ -499,6 +530,16 @@ class RepairNotification(View):
 
         return redirect('profile', pk=profile_pk)
 
+class ParcelNotification(View):
+    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        profile = UserProfile.objects.get(pk=profile_pk)
+
+        notification.user_has_seen = True
+        notification.save()
+
+        return redirect('profile', pk=profile_pk)
+    
 class ThreadNotification(View):
     def get(self, request, notification_pk, object_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)

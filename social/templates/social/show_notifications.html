@@ -52,6 +52,11 @@
                         <a href="{% url 'repair-notification' notification.pk notification.from_user.profile.pk %}">@{{ notification.from_user }} want to repair appliances</a>
                         <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk %}`, `{{ request.path }}`)">&times;</span>
                     </div>
+                {% elif notification.notification_type == 8 %}
+                    <div class="dropdown-item-parent">
+                        <a href="{% url 'parcel-notification' notification.pk notification.from_user.profile.pk %}">@{{ notification.from_user }}ํ You received the parcel</a>
+                        <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk %}`, `{{ request.path }}`)">&times;</span>
+                    </div>
                 {% endif %}
 			{% endif %}
 			{% endfor %}

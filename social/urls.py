@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser, AddServicer, RemoveServicer, NoiseNotification, ServiceNotification, AddRepairer, RemoveRepairer, RepairNotification
+from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser, AddServicer, RemoveServicer, NoiseNotification, ServiceNotification, AddRepairer, RemoveRepairer, RepairNotification, AddParceler, RemoveParceler, ParcelNotification
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
@@ -24,6 +24,8 @@ urlpatterns = [
     path('profile/<int:pk>/services/remove', RemoveServicer.as_view(), name='remove-servicer'),
     path('profile/<int:pk>/repairs/add', AddRepairer.as_view(), name='add-repairer'),
     path('profile/<int:pk>/repairs/remove', RemoveRepairer.as_view(), name='remove-repairer'),
+    path('profile/<int:pk>/parcels/add', AddParceler.as_view(), name='add-parceler'),
+    path('profile/<int:pk>/parcels/remove', RemoveParceler.as_view(), name='remove-parceler'),
 
     path('search/', UserSearch.as_view(), name='profile-search'),
     path('notification/<int:notification_pk>/post/<int:post_pk>', PostNotification.as_view(), name='post-notification'),
@@ -32,6 +34,7 @@ urlpatterns = [
     path('notification/<int:notification_pk>/profile/<int:profile_pk>', NoiseNotification.as_view(), name='noise-notification'),
     path('notification/<int:notification_pk>/profile/<int:profile_pk>', ServiceNotification.as_view(), name='service-notification'),
     path('notification/<int:notification_pk>/profile/<int:profile_pk>', RepairNotification.as_view(), name='repair-notification'),
+    path('notification/<int:notification_pk>/profile/<int:profile_pk>', ParcelNotification.as_view(), name='parcel-notification'),
 
     path('notification/<int:notification_pk>/thread/<int:object_pk>', ThreadNotification.as_view(), name='thread-notification'),
     path('notification/delete/<int:notification_pk>', RemoveNotification.as_view(), name='notification-delete'),
