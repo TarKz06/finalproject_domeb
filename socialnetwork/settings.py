@@ -41,6 +41,7 @@ AUTHENTICATION_BACKENDS = [
 INSTALLED_APPS = [
     'social',
     'landing',
+    'django_extensions',
 
     'crispy_forms',
     'allauth',
@@ -149,3 +150,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'post-list'
 ACCOUNT_EMAIL_REQUIRED = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}

@@ -19,11 +19,11 @@
                         <a class="text-primary post-link" href="{% url 'profile' profile.pk %}">@{{ profile.user }}</a>
                     </p>
                 </div>
-                <p><a class="text-primary post-link" href="{% url 'profile' profile.pk %}">@{{ profile.user }}</a></p>
+                <p><a class="text-primary post-link" href="{% url 'profile' profile.pk %}">@{{ profile.name }}</a></p>
                 {% if profile.location %}
                     <p>{{ profile.location }}</p>
                 {% endif %}
-                <p>Followers: {{ profile.followers.all.count }}</p>
+                {% comment %} <p>Followers: {{ profile.followers.all.count }}</p> {% endcomment %}
             </div>
         </div>
     {% endfor %}
