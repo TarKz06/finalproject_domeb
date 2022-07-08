@@ -7,12 +7,20 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views import View
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .models import Post, Comment, UserProfile, Notification, ThreadModel, MessageModel, Image
 from .forms import PostForm, CommentForm, ThreadForm, MessageForm
 from django.views.generic.edit import UpdateView, DeleteView
+from rest_framework.generics import ListAPIView
+from rest_framework import routers, serializers, viewsets
+
+from .serializers import PostSerializer
 
 
-class PostListView(LoginRequiredMixin, View):
+class PostListView(LoginRequiredMixin, View, ):
+
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         posts = Post.objects.filter(
@@ -692,6 +700,12 @@ class CreateMessage(View):
             thread=thread
         )
         return redirect('thread', pk=pk)
+
+@api_view()
+def post_list(request):
+    posts = Post.objects.all()
+    serializer = PostSerializer(posts,many=True)
+    return Response(serializer.data)
 
 
 

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'social',
     'landing',
     'django_extensions',
-
+    
+    'rest_framework',
     'crispy_forms',
     'allauth',
     'allauth.account',
