@@ -7,7 +7,13 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views import View
-from .models import Post, Comment, UserProfile, Notification, ThreadModel, MessageModel, Image
+from social.model.post import Post
+from social.model.comment import Comment
+from social.model.user_profile import UserProfile
+from social.model.notification import Notification
+from social.model.thread import Thread
+from social.model.message import Message
+from social.model.images import Image
 from .forms import PostForm, CommentForm, ThreadForm, MessageForm
 from django.views.generic.edit import UpdateView, DeleteView
 
@@ -54,6 +60,7 @@ class PostListView(LoginRequiredMixin, View):
 
         return render(request, 'social/post_list.html', context)
 
+
 class PostDetailView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
@@ -68,6 +75,7 @@ class PostDetailView(LoginRequiredMixin, View):
         }
 
         return render(request, 'social/post_detail.html', context)
+
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
         form = CommentForm(request.POST)
@@ -80,7 +88,8 @@ class PostDetailView(LoginRequiredMixin, View):
 
         comments = Comment.objects.filter(post=post).order_by('-created_on')
 
-        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=post.author, post=post)
+        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=post.author,
+                                                   post=post)
 
         context = {
             'post': post,
@@ -89,6 +98,7 @@ class PostDetailView(LoginRequiredMixin, View):
         }
 
         return render(request, 'social/post_detail.html', context)
+
 
 # The future feature doesn't have to be presented in progress 1
 class CommentReplyView(LoginRequiredMixin, View):
@@ -104,9 +114,11 @@ class CommentReplyView(LoginRequiredMixin, View):
             new_comment.parent = parent_comment
             new_comment.save()
 
-        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=parent_comment.author, comment=new_comment)
+        notification = Notification.objects.create(notification_type=2, from_user=request.user,
+                                                   to_user=parent_comment.author, comment=new_comment)
 
         return redirect('post-detail', pk=post_pk)
+
 
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -121,6 +133,7 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         post = self.get_object()
         return self.request.user == post.author
 
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'social/post_delete.html'
@@ -129,6 +142,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
 
 # The future feature doesn't have to be presented in progress 1
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -142,6 +156,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
 
 class ProfileView(View):
     def get(self, request, pk, *args, **kwargs):
@@ -166,7 +181,7 @@ class ProfileView(View):
                 is_following = False
 
         # ======================================================
-        
+
         if len(noisers) == 0:
             is_noising = False
 
@@ -237,6 +252,7 @@ class ProfileView(View):
 
         return render(request, 'social/profile.html', context)
 
+
 class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = UserProfile
     fields = ['name', 'bio', 'birth_date', 'location', 'picture']
@@ -250,6 +266,7 @@ class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         profile = self.get_object()
         return self.request.user == profile.user
 
+
 class AddFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
@@ -258,6 +275,7 @@ class AddFollower(LoginRequiredMixin, View):
         notification = Notification.objects.create(notification_type=3, from_user=request.user, to_user=profile.user)
 
         return redirect('profile', pk=profile.pk)
+
 
 class RemoveFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -276,12 +294,14 @@ class AddNoiser(LoginRequiredMixin, View):
 
         return redirect('profile', pk=profile.pk)
 
+
 class RemoveNoiser(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.noises.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
+
 
 class AddServicer(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -292,12 +312,14 @@ class AddServicer(LoginRequiredMixin, View):
 
         return redirect('profile', pk=profile.pk)
 
+
 class RemoveServicer(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.services.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
+
 
 class AddRepairer(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -308,12 +330,14 @@ class AddRepairer(LoginRequiredMixin, View):
 
         return redirect('profile', pk=profile.pk)
 
+
 class RemoveRepairer(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.repairs.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
+
 
 class AddParceler(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -324,12 +348,14 @@ class AddParceler(LoginRequiredMixin, View):
 
         return redirect('profile', pk=profile.pk)
 
+
 class RemoveParceler(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.parcels.remove(request.user)
 
         return redirect('profile', pk=profile.pk)
+
 
 # The future feature doesn't have to be presented in progress 1
 class AddLike(LoginRequiredMixin, View):
@@ -355,14 +381,16 @@ class AddLike(LoginRequiredMixin, View):
 
         if not is_like:
             post.likes.add(request.user)
-            notification = Notification.objects.create(notification_type=1, from_user=request.user, to_user=post.author, post=post)
+            notification = Notification.objects.create(notification_type=1, from_user=request.user, to_user=post.author,
+                                                       post=post)
 
         if is_like:
             post.likes.remove(request.user)
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
-        
+
+
 # The future feature doesn't have to be presented in progress 1
 class AddDislike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -394,6 +422,7 @@ class AddDislike(LoginRequiredMixin, View):
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
 
+
 # The future feature doesn't have to be presented in progress 1
 class AddCommentLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -418,14 +447,16 @@ class AddCommentLike(LoginRequiredMixin, View):
 
         if not is_like:
             comment.likes.add(request.user)
-            notification = Notification.objects.create(notification_type=1, from_user=request.user, to_user=comment.author, comment=comment)
+            notification = Notification.objects.create(notification_type=1, from_user=request.user,
+                                                       to_user=comment.author, comment=comment)
 
         if is_like:
             comment.likes.remove(request.user)
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
-        
+
+
 # The future feature doesn't have to be presented in progress 1
 class AddCommentDislike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
@@ -457,6 +488,7 @@ class AddCommentDislike(LoginRequiredMixin, View):
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
 
+
 class UserSearch(View):
     def get(self, request, *args, **kwargs):
         query = self.request.GET.get('query')
@@ -469,6 +501,7 @@ class UserSearch(View):
         }
 
         return render(request, 'social/search.html', context)
+
 
 # List issue
 class ListFollowers(View):
@@ -483,6 +516,7 @@ class ListFollowers(View):
 
         return render(request, 'social/followers_list.html', context)
 
+
 class ListNoisers(View):
     def get(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
@@ -494,6 +528,7 @@ class ListNoisers(View):
         }
 
         return render(request, 'social/noisers_list.html', context)
+
 
 class ListServicers(View):
     def get(self, request, pk, *args, **kwargs):
@@ -507,6 +542,7 @@ class ListServicers(View):
 
         return render(request, 'social/servicers_list.html', context)
 
+
 class ListRepairers(View):
     def get(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
@@ -518,7 +554,8 @@ class ListRepairers(View):
         }
 
         return render(request, 'social/repairers_list.html', context)
-        
+
+
 class Listparcelers(View):
     def get(self, request, pk, *args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
@@ -531,6 +568,7 @@ class Listparcelers(View):
 
         return render(request, 'social/parcelers_list.html', context)
 
+
 class PostNotification(View):
     def get(self, request, notification_pk, post_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
@@ -540,6 +578,7 @@ class PostNotification(View):
         notification.save()
 
         return redirect('post-detail', pk=post_pk)
+
 
 class FollowNotification(View):
     def get(self, request, notification_pk, profile_pk, *args, **kwargs):
@@ -551,6 +590,7 @@ class FollowNotification(View):
 
         return redirect('profile', pk=profile_pk)
 
+
 class NoiseNotification(View):
     def get(self, request, notification_pk, profile_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
@@ -560,6 +600,7 @@ class NoiseNotification(View):
         notification.save()
 
         return redirect('profile', pk=profile_pk)
+
 
 class ServiceNotification(View):
     def get(self, request, notification_pk, profile_pk, *args, **kwargs):
@@ -571,6 +612,7 @@ class ServiceNotification(View):
 
         return redirect('profile', pk=profile_pk)
 
+
 class RepairNotification(View):
     def get(self, request, notification_pk, profile_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
@@ -581,6 +623,7 @@ class RepairNotification(View):
 
         return redirect('profile', pk=profile_pk)
 
+
 class ParcelNotification(View):
     def get(self, request, notification_pk, profile_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
@@ -590,16 +633,18 @@ class ParcelNotification(View):
         notification.save()
 
         return redirect('profile', pk=profile_pk)
-    
+
+
 class ThreadNotification(View):
     def get(self, request, notification_pk, object_pk, *args, **kwargs):
         notification = Notification.objects.get(pk=notification_pk)
-        thread = ThreadModel.objects.get(pk=object_pk)
+        thread = Thread.objects.get(pk=object_pk)
 
         notification.user_has_seen = True
         notification.save()
 
         return redirect('thread', pk=object_pk)
+
 
 class RemoveNotification(View):
     def delete(self, request, notification_pk, *args, **kwargs):
@@ -610,15 +655,17 @@ class RemoveNotification(View):
 
         return HttpResponse('Success', content_type='text/plain')
 
+
 class ListThreads(View):
     def get(self, request, *args, **kwargs):
-        threads = ThreadModel.objects.filter(Q(user=request.user) | Q(receiver=request.user))
+        threads = Thread.objects.filter(Q(user=request.user) | Q(receiver=request.user))
 
         context = {
             'threads': threads
         }
 
         return render(request, 'social/inbox.html', context)
+
 
 class CreateThread(View):
     def get(self, request, *args, **kwargs):
@@ -637,15 +684,15 @@ class CreateThread(View):
 
         try:
             receiver = User.objects.get(username=username)
-            if ThreadModel.objects.filter(user=request.user, receiver=receiver).exists():
-                thread = ThreadModel.objects.filter(user=request.user, receiver=receiver)[0]
+            if Thread.objects.filter(user=request.user, receiver=receiver).exists():
+                thread = Thread.objects.filter(user=request.user, receiver=receiver)[0]
                 return redirect('thread', pk=thread.pk)
-            elif ThreadModel.objects.filter(user=receiver, receiver=request.user).exists():
-                thread = ThreadModel.objects.filter(user=receiver, receiver=request.user)[0]
+            elif Thread.objects.filter(user=receiver, receiver=request.user).exists():
+                thread = Thread.objects.filter(user=receiver, receiver=request.user)[0]
                 return redirect('thread', pk=thread.pk)
 
             if form.is_valid():
-                thread = ThreadModel(
+                thread = Thread(
                     user=request.user,
                     receiver=receiver
                 )
@@ -656,11 +703,12 @@ class CreateThread(View):
             messages.error(request, 'Invalid username')
             return redirect('create-thread')
 
+
 class ThreadView(View):
     def get(self, request, pk, *args, **kwargs):
         form = MessageForm()
-        thread = ThreadModel.objects.get(pk=pk)
-        message_list = MessageModel.objects.filter(thread__pk__contains=pk)
+        thread = Thread.objects.get(pk=pk)
+        message_list = Message.objects.filter(thread__pk__contains=pk)
         context = {
             'thread': thread,
             'form': form,
@@ -669,10 +717,11 @@ class ThreadView(View):
 
         return render(request, 'social/thread.html', context)
 
+
 class CreateMessage(View):
     def post(self, request, pk, *args, **kwargs):
         form = MessageForm(request.POST, request.FILES)
-        thread = ThreadModel.objects.get(pk=pk)
+        thread = Thread.objects.get(pk=pk)
         if thread.receiver == request.user:
             receiver = thread.user
         else:
@@ -692,6 +741,3 @@ class CreateMessage(View):
             thread=thread
         )
         return redirect('thread', pk=pk)
-
-
-
