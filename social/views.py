@@ -14,11 +14,19 @@ from social.model.notification import Notification
 from social.model.thread import Thread
 from social.model.message import Message
 from social.model.images import Image
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .forms import PostForm, CommentForm, ThreadForm, MessageForm
 from django.views.generic.edit import UpdateView, DeleteView
+from rest_framework.generics import ListAPIView
+from rest_framework import routers, serializers, viewsets
+
+from .serializers import PostSerializer
 
 
-class PostListView(LoginRequiredMixin, View):
+class PostListView(LoginRequiredMixin, View, ):
+
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         posts = Post.objects.filter(
@@ -741,3 +749,10 @@ class CreateMessage(View):
             thread=thread
         )
         return redirect('thread', pk=pk)
+
+
+@api_view()
+def post_list(request):
+    posts = Post.objects.all()
+    serializer = PostSerializer(posts,many=True)
+    return Response(serializer.data)
