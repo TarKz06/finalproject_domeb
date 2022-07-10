@@ -4,6 +4,5 @@ build/
 dist/
 *.pyc
 *.pyo
-/__pycache__/
 *.py[cod]
 *$py.class
