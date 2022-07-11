@@ -7,20 +7,21 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views import View
-from social.model.post import Post
-from social.model.comment import Comment
-from social.model.user_profile import UserProfile
-from social.model.notification import Notification
-from social.model.thread import Thread
-from social.model.message import Message
-from social.model.images import Image
+from social.models.post import Post
+from social.models.comment import Comment
+from social.models.user_profile import UserProfile
+from social.models.notification import Notification
+from social.models.thread import Thread
+from social.models.message import Message
+from social.models.images import Image
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .forms import PostForm, CommentForm, ThreadForm, MessageForm
+from social.forms.post_form import PostForm
+from social.forms.thread_form import ThreadForm
+from social.forms.comment_form import CommentForm
+from social.forms.message_form import MessageForm
 from django.views.generic.edit import UpdateView, DeleteView
-from rest_framework.generics import ListAPIView
-from rest_framework import routers, serializers, viewsets
 
 from .serializers import PostSerializer
 

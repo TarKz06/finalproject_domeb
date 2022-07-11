@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from social.model.post import Post
+from social.models.post import Post
 
 
 class PostSerializer(serializers.Serializer):
