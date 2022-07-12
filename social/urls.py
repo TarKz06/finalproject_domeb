@@ -1,6 +1,64 @@
 from django.urls import path
+
+# post sub feature
 from social.views.post.post_list import PostListView
-from social.views.post.post_detail import PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView, PostNotification, FollowNotification, ThreadNotification, RemoveNotification, CreateThread, ListThreads, ThreadView, CreateMessage, AddNoiser, RemoveNoiser, AddServicer, RemoveServicer, NoiseNotification, ServiceNotification, AddRepairer, RemoveRepairer, RepairNotification, AddParceler, RemoveParceler, ParcelNotification, ListNoisers, ListServicers, ListRepairers, Listparcelers
+from social.views.post.post_detail import PostDetailView
+from social.views.post.post_edit import PostEditView
+from social.views.post.post_delete import PostDeleteView
+from social.views.post.add_dislike import AddDislike
+from social.views.post.add_like import AddLike
+from social.views.post.post_notification import PostNotification
+
+# comment sub feature
+from social.views.comment.comment_delete import CommentDeleteView
+from social.views.comment.add_comment_like import AddCommentLike
+from social.views.comment.add_comment_dislike import AddCommentDislike
+from social.views.comment.comment_reply import CommentReplyView
+
+# thread sub feature
+from social.views.thread.thread_notification import ThreadNotification
+from social.views.thread.create_thread import CreateThread
+from social.views.thread.list_threads import ListThreads
+from social.views.thread.create_message import CreateMessage
+from social.views.thread.thread import ThreadView
+
+# profile sub feature
+from social.views.profile.profile import ProfileView
+from social.views.profile.profile_edit import ProfileEditView
+from social.views.profile.user_search import UserSearch
+
+# follower sub feature
+from social.views.profile.follower.add_follower import AddFollower
+from social.views.profile.follower.remove_follower import RemoveFollower
+from social.views.profile.follower.list_followers import ListFollowers
+from social.views.profile.follower.follow_notification import FollowNotification
+
+# noiser sub feature
+from social.views.profile.noiser.add_noiser import AddNoiser
+from social.views.profile.noiser.remove_noiser import RemoveNoiser
+from social.views.profile.noiser.noise_notification import NoiseNotification
+from social.views.profile.noiser.list_noisers import ListNoisers
+
+# servicer sub feature
+from social.views.profile.servicer.add_servicer import AddServicer
+from social.views.profile.servicer.remove_servicer import RemoveServicer
+from social.views.profile.servicer.service_notification import ServiceNotification
+from social.views.profile.servicer.list_servicers import ListServicers
+
+# repairer sub feature
+from social.views.profile.repairer.add_repairer import AddRepairer
+from social.views.profile.repairer.remove_repairer import RemoveRepairer
+from social.views.profile.repairer.repair_notification import RepairNotification
+from social.views.profile.repairer.list_repairers import ListRepairers
+
+# parceler sub feature
+from social.views.profile.parceler.add_parceler import AddParceler
+from social.views.profile.parceler.remove_parceler import RemoveParceler
+from social.views.profile.parceler.parcel_notification import ParcelNotification
+from social.views.profile.parceler.list_parcelers import Listparcelers
+
+# notification sub feature
+from social.views.notification.remove_notification import RemoveNotification
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
