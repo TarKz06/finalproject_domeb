@@ -7,7 +7,6 @@ from social.models.user_profile import UserProfile
 class RemoveFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = self.remove_follower(pk, request.user)
-        print(profile)
         return redirect('profile', pk=profile.pk)
 
     def get_profile(self, profile_id):
@@ -17,4 +16,3 @@ class RemoveFollower(LoginRequiredMixin, View):
         profile = self.get_profile(profile_id)
         profile.followers.remove(follower)
         return profile
-

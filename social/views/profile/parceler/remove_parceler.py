@@ -6,7 +6,13 @@ from social.models.user_profile import UserProfile
 
 class RemoveParceler(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
-        profile = UserProfile.objects.get(pk=pk)
-        profile.parcels.remove(request.user)
-
+        profile = self.remove_parceler(pk, request.user)
         return redirect('profile', pk=profile.pk)
+
+    def get_profile(self, profile_id):
+        return UserProfile.objects.get(pk=profile_id)
+
+    def remove_parceler(self, profile_id, parceler):
+        profile = self.get_profile(profile_id)
+        profile.parcels.remove(parceler)
+        return profile
