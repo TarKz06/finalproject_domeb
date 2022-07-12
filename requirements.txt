@@ -59,5 +59,6 @@ typing-extensions==3.10.0.0
 urllib3==1.25.8
 webencodings==0.5.1
 zope.interface==5.4.0
+django-extensions
 
 djangorestframework~=3.13.1

@@ -1,11 +1,11 @@
 from django.contrib import admin
-from social.model.post import Post
-from social.model.comment import Comment
-from social.model.user_profile import UserProfile
-from social.model.notification import Notification
-from social.model.images import Image
-from social.model.message import Message
-from social.model.thread import Thread
+from social.models.post import Post
+from social.models.comment import Comment
+from social.models.user_profile import UserProfile
+from social.models.notification import Notification
+from social.models.images import Image
+from social.models.message import Message
+from social.models.thread import Thread
 
 admin.site.register(Post)
 admin.site.register(UserProfile)
