@@ -1,0 +1,8 @@
+.idea/
+venv/
+build/
+dist/
+*.pyc
+*.pyo
+*.py[cod]
+*$py.class

@@ -1,5 +1,5 @@
 from django import template
-from social.models import Notification
+from social.models.notification import Notification
 
 register = template.Library()
 

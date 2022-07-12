@@ -1,0 +1,6 @@
+@startuml
+
+happyState -> sadState : Lost money
+sadState --> happyState : reciver money
+
+@enduml

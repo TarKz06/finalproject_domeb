@@ -1,0 +1,25 @@
+from django.shortcuts import redirect
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.views import View
+from social.models.user_profile import UserProfile
+from social.models.notification import Notification
+
+
+class AddFollower(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = self.get_profile(pk)
+        user = request.user
+        new_follower = self.add_follower(profile, user)
+        notification = self.send_notification(user,profile)
+
+        return redirect('profile', pk=profile.pk)
+
+    def get_profile(self,user_id):
+        return UserProfile.objects.get(pk=user_id)
+
+    def add_follower(self, profile, follower):
+        profile.followers.add(follower)
+        return profile
+
+    def send_notification(self, user, profile):
+        return Notification.objects.create(notification_type=3, from_user=user, to_user=profile.user)
