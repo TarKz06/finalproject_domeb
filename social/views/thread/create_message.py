@@ -9,22 +9,33 @@ class CreateMessage(View):
     def post(self, request, pk, *args, **kwargs):
         form = MessageForm(request.POST, request.FILES)
         thread = Thread.objects.get(pk=pk)
-        if thread.receiver == request.user:
+        user = request.user
+        receiver = self.get_receiver(thread, user)
+        message = self.create_message(thread, user, receiver, form)
+        notification = self.send_notification(user, receiver, thread)
+        return redirect('thread', pk=pk)
+
+    def get_receiver(self, thread, user):
+        if thread.receiver == user:
             receiver = thread.user
         else:
             receiver = thread.receiver
+        return receiver
 
+    def create_message(self, thread, user, receiver, form):
         if form.is_valid():
             message = form.save(commit=False)
             message.thread = thread
-            message.sender_user = request.user
+            message.sender_user = user
             message.receiver_user = receiver
             message.save()
+            return message
+        return None
 
-        notification = Notification.objects.create(
+    def send_notification(self, user, receiver, thread):
+        return Notification.objects.create(
             notification_type=4,
-            from_user=request.user,
+            from_user=user,
             to_user=receiver,
             thread=thread
         )
-        return redirect('thread', pk=pk)
