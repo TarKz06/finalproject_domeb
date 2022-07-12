@@ -4,6 +4,8 @@ from django.conf import settings
 from django.db import migrations, models
 import django.utils.timezone
 
+import social.models.images
+
 
 class Migration(migrations.Migration):
 

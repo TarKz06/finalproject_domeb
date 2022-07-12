@@ -22,6 +22,7 @@ class ProfileView(View):
             profile.get('number_of_parcelers'),
             profile.get('is_parceling'),
         )
+        print(context)
         return render(request, 'social/profile.html', context)
 
     def create_context(
