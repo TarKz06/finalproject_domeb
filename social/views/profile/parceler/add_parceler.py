@@ -9,7 +9,7 @@ class AddParceler(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = self.get_profile(pk)
         parcelers = request.user
-        new_parcelers = self.add_parceler(profile,parcelers)
+        new_parcelers = self.add_parceler(profile, parcelers)
         notification = self.send_notification(parcelers, profile)
 
         return redirect('profile', pk=profile.pk)
