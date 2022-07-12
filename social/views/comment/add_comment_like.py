@@ -9,31 +9,38 @@ from social.models.notification import Notification
 class AddCommentLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         comment = Comment.objects.get(pk=pk)
+        user = request.user
+        comment = self.like(comment, user)
+        next = request.POST.get('next', '/')
+        return HttpResponseRedirect(next)
 
+    def like(self, comment, user):
         is_dislike = False
 
         for dislike in comment.dislikes.all():
-            if dislike == request.user:
+            if dislike == user:
                 is_dislike = True
                 break
 
         if is_dislike:
-            comment.dislikes.remove(request.user)
+            comment.dislikes.remove(user)
 
         is_like = False
 
         for like in comment.likes.all():
-            if like == request.user:
+            if like == user:
                 is_like = True
                 break
 
         if not is_like:
-            comment.likes.add(request.user)
-            notification = Notification.objects.create(notification_type=1, from_user=request.user,
-                                                       to_user=comment.author, comment=comment)
+            comment.likes.add(user)
+            notification = self.create_notification(comment, user)
 
         if is_like:
-            comment.likes.remove(request.user)
+            comment.likes.remove(user)
 
-        next = request.POST.get('next', '/')
-        return HttpResponseRedirect(next)
+        return comment
+
+    def create_notification(self, comment, user):
+        return Notification.objects.create(notification_type=1, from_user=user,
+                                           to_user=comment.author, comment=comment)

@@ -9,38 +9,45 @@ from social.forms.comment_form import CommentForm
 
 class PostDetailView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
-        post = Post.objects.get(pk=pk)
+        post = self.details(pk)
+        comments = self.comment_details(post)
         form = CommentForm()
-
-        comments = Comment.objects.filter(post=post).order_by('-created_on')
-
-        context = {
-            'post': post,
-            'form': form,
-            'comments': comments,
-        }
+        context = self.create_context(post, form, comments)
 
         return render(request, 'social/post_detail.html', context)
 
     def post(self, request, pk, *args, **kwargs):
-        post = Post.objects.get(pk=pk)
+        post = self.details(pk)
         form = CommentForm(request.POST)
+        notification = self.create_notification(request.user, post)
+        comments = self.create_comment(post, form, request.user)
+        context = self.create_context(post, form, comments)
 
+        return render(request, 'social/post_detail.html', context)
+
+    def create_notification(self, user, post):
+        return Notification.objects.create(notification_type=2, from_user=user, to_user=post.author,
+                                           post=post)
+
+    def create_comment(self, post, form, user):
         if form.is_valid():
             new_comment = form.save(commit=False)
-            new_comment.author = request.user
+            new_comment.author = user
             new_comment.post = post
             new_comment.save()
 
         comments = Comment.objects.filter(post=post).order_by('-created_on')
+        return comments
 
-        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=post.author,
-                                                   post=post)
+    def details(self, id):
+        return Post.objects.get(pk=id)
 
-        context = {
+    def comment_details(self, post):
+        return Comment.objects.filter(post=post).order_by('-created_on')
+
+    def create_context(self, post, form, comments):
+        return {
             'post': post,
             'form': form,
             'comments': comments,
         }
-
-        return render(request, 'social/post_detail.html', context)

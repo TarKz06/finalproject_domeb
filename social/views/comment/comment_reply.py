@@ -14,14 +14,18 @@ class CommentReplyView(LoginRequiredMixin, View):
         parent_comment = Comment.objects.get(pk=pk)
         form = CommentForm(request.POST)
 
-        if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.author = request.user
-            new_comment.post = post
-            new_comment.parent = parent_comment
-            new_comment.save()
+        new_comment = self.reply(parent_comment, post, form, request.user)
 
         notification = Notification.objects.create(notification_type=2, from_user=request.user,
                                                    to_user=parent_comment.author, comment=new_comment)
 
         return redirect('post-detail', pk=post_pk)
+
+    def reply(self, comment, post, form, user):
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.author = user
+            new_comment.post = post
+            new_comment.parent = comment
+            new_comment.save()
+        return comment
