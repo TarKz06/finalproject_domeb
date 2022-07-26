@@ -1,8 +1,13 @@
-from django.test import TestCase
-from social.models.user_profile import UserProfile
+from django.contrib.auth.models import User
+from django.core import exceptions
+import unittest
 
+class ProfileViewTest(unittest.TestCase):
+    def test_profile_view(self):
+        user = User.objects.get(id=1)
+        self.assertEqual(user.username, 'domeb')
 
-class ProfileViewTest(TestCase):
     def test_profile_not_found(self):
-        user = UserProfile.objects.get(pk=1)
-        self.assertEqual(user.name, 'oat431')
+        with self.assertRaises(exceptions.ObjectDoesNotExist) as context:
+            User.objects.get(id=999)
+            self.assertTrue('None' in context.exception)

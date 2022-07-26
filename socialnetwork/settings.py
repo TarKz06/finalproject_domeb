@@ -34,12 +34,12 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
+TEST_WITHOUT_MIGRATIONS_COMMAND = 'django_nose.management.commands.test.Command'
 INSTALLED_APPS = [
     'social',
     'landing',
     'django_extensions',
-
+    'test_without_migrations',
     'crispy_forms',
     'allauth',
     'allauth.account',
