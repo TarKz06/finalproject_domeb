@@ -58,6 +58,19 @@ class MyTestCase(unittest.TestCase):
         test = user_1.repairs.remove(user_2.user)
         self.assertEqual(test, None)
 
+        with self.assertRaises(exceptions.ObjectDoesNotExist) as context:
+            user_1 = UserProfile.objects.get(pk=999)
+            self.assertTrue('None' in context.exception)
+
+        with self.assertRaises(exceptions.ObjectDoesNotExist) as context:
+            user_2 = UserProfile.objects.get(pk=998)
+            self.assertTrue('None' in context.exception)
+
+        with self.assertRaises(exceptions.ObjectDoesNotExist) as context:
+            user_1 = UserProfile.objects.get(pk=999)
+            user_2 = UserProfile.objects.get(pk=998)
+            self.assertTrue('None' in context.exception)
+
 
 if __name__ == '__main__':
     unittest.main()
