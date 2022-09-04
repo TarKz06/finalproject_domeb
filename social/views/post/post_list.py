@@ -7,6 +7,8 @@ from social.models.post import Post
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from social.serializers import PostSerializer
+from linebot import LineBotApi
+from linebot.models import TextSendMessage
 
 
 class PostListView(LoginRequiredMixin, View, ):
@@ -23,6 +25,10 @@ class PostListView(LoginRequiredMixin, View, ):
         files = request.FILES.getlist('image')
         new_post = self.create_post(form, request.user,files)
         context = self.create_context(posts,form)
+
+        line_bot_api = LineBotApi('g0DnCQ6ow5PB5z4md9trhxi+rJZ56WL/K78bkvLC0lR9b1/jy/QfhSdghiqB43bzPI/KehWMnZSuCIwH7ZBc0yVO5rohSqXFv875qo/aLDZ9RFakOxofQiRkfbgsQbHQWwx04O/CHBIe/TP0Y8MckQdB04t89/1O/w1cDnyilFU=')
+        line_bot_api.multicast(['U285313a7c811bb8d6805fe56c97951f2', 'U5d40816d9cc998f21dec8bb56b54b18d'], TextSendMessage(text='Notification!!  You have a new announcement in Domeb web application.'))
+
         print('post created !!!')
         return render(request, 'social/post_list.html', context)
 

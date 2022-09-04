@@ -10,7 +10,6 @@ class PostNotification(View):
         post = Post.objects.get(pk=post_pk)
 
         notification = self.delete_notification(notification)
-
         return redirect('post-detail', pk=post_pk)
 
     def delete_notification(self, notification):
